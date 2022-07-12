@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
 
 const oasInit = require('express-openapi').initialize;
 const { apiDoc } = require('./src/api');
@@ -29,7 +30,10 @@ const setupExpress = async () => {
         apiDoc,
         exposeApiDocs: true,
         operations: controllers,
-    })
+    });
+
+    // Auto-generated API docs
+    app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(apiDoc));
 
     // Listen to port
     const server = app.listen(process.env.PORT || 3000, () => {
