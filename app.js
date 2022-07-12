@@ -8,6 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const oasInit = require('express-openapi').initialize;
 const { apiDoc } = require('./src/api');
 const controllers = require('./src/controllers');
+const setupDb = require('./src/helpers/setupDb');
 
 // Loads .env values to process.env
 dotenv.config();
@@ -23,6 +24,9 @@ const setupExpress = async () => {
     app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
     // Extra middlewares
+
+    // Setup database
+    await setupDb();
 
     // Initialize openAPI
     oasInit({
