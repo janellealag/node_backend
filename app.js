@@ -4,6 +4,10 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
+const oasInit = require('express-openapi').initialize;
+const { apiDoc } = require('./src/api');
+const controllers = require('./src/controllers');
+
 // Loads .env values to process.env
 dotenv.config();
 
@@ -18,7 +22,14 @@ const setupExpress = async () => {
     app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
     // Extra middlewares
-    
+
+    // Initialize openAPI
+    oasInit({
+        app,
+        apiDoc,
+        exposeApiDocs: true,
+        operations: controllers,
+    })
 
     // Listen to port
     const server = app.listen(process.env.PORT || 3000, () => {
