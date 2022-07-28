@@ -11,17 +11,17 @@ module.exports = {
       console.log(`[getUsers] Error: ${error}`);
     }
   },
-  newUser: async (req, res) => {
+  signUp: async (req, res) => {
     try {
-      console.log(`[newUser] Creating new user`);
+      console.log(`[signUp] Creating new user`);
 
-      const { name } = req.body;
+      const { username, password, email } = req.body;
 
-      const userExists = await User.findOne({name});
+      const userExists = await User.findOne({username});
       if (userExists) {
         res.send('Error: User already exists');
       } else {
-        await userService.newUser(req.body.name);
+        await userService.signUp(username, password, email);
       }
       res.send('Successful registration');
 
@@ -32,15 +32,15 @@ module.exports = {
   updateUser: async (req, res) => {
     try {
       console.log(`[updateUser] Updating new user`);
-      const { name } = req.params;
+      const { username } = req.params;
 
-      const user = await User.findOne({name});
+      const user = await User.findOne({username});
       if (!user) {
-        res.send(`Error: No user ${name}`);
+        res.send(`Error: No user ${username}`);
       } else {
         await userService.updateUser(user._id, req.body);
       }
-      res.send(`User ${name} successfully updated.`);
+      res.send(`User ${username} successfully updated.`);
     } catch (error) {
       console.log(`[updateUser] Error: ${error}`);
     }
@@ -48,17 +48,35 @@ module.exports = {
   deleteUser: async (req, res) => {
     try {
       console.log(`[deleteUser] Updating new user`);
-      const { name } = req.params;
+      const { username } = req.params;
 
-      const user = await User.findOne({name});
+      const user = await User.findOne({username});
       if (!user) {
-        res.send(`Error: No user ${name}`);
+        res.send(`Error: No user ${username}`);
       } else {
         await User.deleteOne({_id: user._id});
       }
-      res.send(`User ${name} successfully deleted.`);
+      res.send(`User ${username} successfully deleted.`);
     } catch (error) {
       console.log(`[deleteUser] Error: ${error}`);
+    }
+  },
+  signIn: async (req, res) => {
+    try {
+      console.log(`[signIn] User is signing in`);
+      const { username, password } = req.body;
+      const user = await User.findOne({ username });
+      if (!user) {
+        res.send(`Error: Login Failed`);
+      } else {
+        if ( user.password === password ) {
+          res.send('Successful Login!');
+        } else {
+          res.send('Incorrect credentials');
+        }
+      }
+    } catch (error) {
+      console.log(`[signIn] Error: ${error}`);
     }
   }
 };

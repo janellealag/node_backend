@@ -6,18 +6,18 @@ module.exports = {
     const allUsers = await User.find({});
     return allUsers;
   },
-  newUser: async (name) => {
+  signUp: async (username, password, email) => {
     const newUser = new User ({
-      name
+      username, password, email
     });
     await newUser.save();
-    console.log(`[newUser] Created new user`);
+    console.log(`[signUp] Created new user`);
     
   },
   updateUser: async (userId, body) => {
     const updatedUser = {};
-    updatedUser.name = body.name;
+    updatedUser.username = body.username;
     await User.updateOne({_id: userId}, updatedUser);
-  }
+  },
   
 }

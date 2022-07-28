@@ -20,7 +20,10 @@ const responses = {
       },
     },
   },
-  // ...errors,
+  400: { description: 'Bad request.' },
+  401: { description: 'Not authorized.' },
+  404: { description: 'Resource not found.' },
+  '5XX': { description: 'Unexpected error.' },
 };
 
 module.exports = {
@@ -30,23 +33,12 @@ module.exports = {
       operationId: 'getUsers',
       responses,
     },
-    post: {
-      description: 'Create new user',
-      operationId: 'newUser',
-      parameters: [{
-        in: 'body',
-        name: 'body',
-        schema: user.newUser,
-        required: false,
-      }],
-      responses,
-    },
     put: {
       description: 'Update user info',
       operationId: 'updateUser',
       parameters: [{
         in: 'path',
-        name: 'name',
+        name: 'username',
         schema: {
           type: 'string',
         },
@@ -64,13 +56,39 @@ module.exports = {
       operationId: 'deleteUser',
       parameters: [{
         in: 'path',
-        name: 'name',
+        name: 'username',
         schema: {
           type: 'string',
         },
         required: true
       }],
       responses,
-    }
+    },
+  },
+  signIn: {
+    post: {
+      description: 'User sign in',
+      operationId: 'signIn',
+      parameters: [{
+        in: 'body',
+        name: 'body',
+        schema: user.signIn,
+        required: true
+      }],
+      responses,
+    },    
+  },
+  signUp: {
+    post: {
+      description: 'User sign up',
+      operationId: 'signUp',
+      parameters: [{
+        in: 'body',
+        name: 'body',
+        schema: user.signUp,
+        required: true
+      }],
+      responses,
+    },
   },
 }
