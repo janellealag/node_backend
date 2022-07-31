@@ -9,15 +9,15 @@ const apiDoc = {
   },
   paths,
   servers,
-//   components: {
-//     securitySchemes: {
-//       jwt: {
-//         type: 'apiKey',
-//         in: 'header',
-//         name: 'x-access-token',
-//       },
-//     },
-//   },
+  components: {
+    securitySchemes: {
+      jwt: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-access-token',
+      },
+    },
+  },
 };
 
 module.exports = { apiDoc };

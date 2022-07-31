@@ -31,6 +31,7 @@ module.exports = {
     get: {
       description: 'Get users',
       operationId: 'getUsers',
+      security: [{ jwt: ['user-management'] }],
       responses,
     },
     put: {
@@ -86,6 +87,27 @@ module.exports = {
         in: 'body',
         name: 'body',
         schema: user.signUp,
+        required: true
+      }],
+      responses,
+    },
+  },
+  signOut: {
+    post: {
+      description: 'sign Out',
+      operationId: 'signOut',
+      parameters: [{
+        in: 'body',
+        name: 'body',
+        schema: {
+          type: 'object',
+          required: ['username'],
+          properties: {
+            username: {
+              type: 'string',
+            },
+          },
+        },
         required: true
       }],
       responses,

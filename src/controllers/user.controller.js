@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { user: User } = require('../models');
 const userService = require('../service/user.service');
 
@@ -66,10 +67,19 @@ module.exports = {
       console.log(`[signIn] User is signing in`);
       const { username, password } = req.body;
       const user = await User.findOne({ username });
+
       if (!user) {
         res.send(`Error: Login Failed`);
+        
       } else {
         if ( user.password === password ) {
+          const {_id: id, username} = user;
+          var token = jwt.sign(
+            { id, username }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: +process.env.JWT_EXPIRATION }
+          );
+          console.log(token)
           res.send('Successful Login!');
         } else {
           res.send('Incorrect credentials');
@@ -78,5 +88,20 @@ module.exports = {
     } catch (error) {
       console.log(`[signIn] Error: ${error}`);
     }
+  },
+  signOut: async (req, res) => {
+    try {
+      console.log(`[signOut] User is signing out`);
+      const { username } = req.body;
+      const user = await User.findOne({username});
+
+      if (!user) {
+        res.send(`Error: No user found`);
+      } else {
+        res.send(`User signed out`);
+      }
+    } catch (error) {
+      console.log(`[signOut] Error: ${error}`);
+    } 
   }
 };

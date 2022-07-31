@@ -9,6 +9,7 @@ const oasInit = require('express-openapi').initialize;
 const { apiDoc } = require('./src/api');
 const controllers = require('./src/controllers');
 const setupDb = require('./src/helpers/setupDb');
+const securityHandlers = require('./src/api/extras/securityHandlers');
 
 // Loads .env values to process.env
 dotenv.config();
@@ -34,7 +35,9 @@ const setupExpress = async () => {
         apiDoc,
         exposeApiDocs: true,
         operations: controllers,
+        securityHandlers,
     });
+
 
     // Auto-generated API docs
     app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(apiDoc));
