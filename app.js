@@ -5,11 +5,16 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 
+// Additional
+const cors = require('cors');
+const jsend = require('./src/middlewares/jsend');
+
 const oasInit = require('express-openapi').initialize;
 const { apiDoc } = require('./src/api');
 const controllers = require('./src/controllers');
 const setupDb = require('./src/helpers/setupDb');
 const securityHandlers = require('./src/api/extras/securityHandlers');
+const { appendFileSync } = require('fs');
 
 // Loads .env values to process.env
 dotenv.config();
@@ -25,6 +30,8 @@ const setupExpress = async () => {
     app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
     // Extra middlewares
+    app.use(cors())
+    app.use(jsend)
 
     // Setup database
     await setupDb();
@@ -43,7 +50,7 @@ const setupExpress = async () => {
     app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(apiDoc));
 
     // Listen to port
-    const server = app.listen(process.env.PORT || 3000, () => {
+    const server = app.listen(process.env.PORT || 5001, () => {
         console.log(`Listening on port ${server.address().port}`)
     });
 

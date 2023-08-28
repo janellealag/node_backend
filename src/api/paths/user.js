@@ -113,4 +113,13 @@ module.exports = {
       responses,
     },
   },
+  currentUser: {
+    get: {
+      description: 'Get current user information',
+      operationId: 'getCurrentUserInfo',
+      parameters: [],
+      security: [{ jwt: [] }],
+      responses,
+    },
+  },
 }

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 module.exports = async () => {
   try {
-    const dbHost = process.env.AUTH_DB_HOST || 'localhost';
+    const dbHost = process.env.AUTH_DB_HOST || '0.0.0.0';
     const dbPort = process.env.AUTH_DB_PORT || 27017;
     const dbName = process.env.AUTH_DB_NAME || 'admin';
 

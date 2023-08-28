@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { user: User } = require('../models');
 const userService = require('../service/user.service');
+const throwErrorIf = require('../helpers/throwErrorIf');
 
 module.exports = {
   getUsers: async (req, res) => {
@@ -22,6 +23,7 @@ module.exports = {
       if (userExists) {
         res.send('Error: User already exists');
       } else {
+        // TODO: Insert bcrypt here.
         await userService.signUp(username, password, email);
       }
       res.send('Successful registration');
@@ -62,31 +64,28 @@ module.exports = {
       console.log(`[deleteUser] Error: ${error}`);
     }
   },
-  signIn: async (req, res) => {
+  signIn: async (req, res, next) => {
     try {
       console.log(`[signIn] User is signing in`);
       const { username, password } = req.body;
       const user = await User.findOne({ username });
+      throwErrorIf(!user, "User not found", 404);
 
-      if (!user) {
-        res.send(`Error: Login Failed`);
-        
-      } else {
         if ( user.password === password ) {
-          const {_id: id, username} = user;
+          const {_id: id, username, email} = user;
           var token = jwt.sign(
-            { id, username }, 
+            { id, username, email }, 
             process.env.JWT_SECRET, 
             { expiresIn: +process.env.JWT_EXPIRATION }
           );
-          console.log(token)
-          res.send('Successful Login!');
+
+          res.jsend.success({ id, username, email, token });
         } else {
-          res.send('Incorrect credentials');
+          res.jsend.fail('Incorrect username or password');
         }
-      }
+      
     } catch (error) {
-      console.log(`[signIn] Error: ${error}`);
+      next(error)
     }
   },
   signOut: async (req, res) => {
@@ -103,5 +102,19 @@ module.exports = {
     } catch (error) {
       console.log(`[signOut] Error: ${error}`);
     } 
+  },
+  getCurrentUserInfo: async (req, res, next) => {
+    try {
+      console.log('[getCurrentUser]');
+      const user = new User(req.current);
+
+      res.jsend.success({
+        id: user._id,
+        username: user.username,
+        email: user.email
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 };

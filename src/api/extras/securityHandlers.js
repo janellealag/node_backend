@@ -10,6 +10,7 @@ module.exports = {
           if (err) {
             reject(err);
           }
+          req.current = decoded;
           resolve(true);
         });
       } else {
